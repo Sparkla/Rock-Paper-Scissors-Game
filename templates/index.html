@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rock Paper Scissors Game</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
+
+  <style type="text/css">
+    #ready,#play{
+      padding: 5px;
+      border-radius: 8px;
+      background-color: green;
+      border: none;
+      width:200px;
+      font-style: bold;
+      color: white;
+    }
+   #you,#bot{
+    border-radius: 20px;
+    box-shadow: 2px 2px 10px 3px;
+   }
+
+    button{
+      background-color: pink ; 
+      height: 40px;
+      width: 80px;
+      border-radius: 5px;
+    }
+
+    body{
+      background-color: #b0fff7;
+    }
+
+    .box,#you,#bot{
+      background-color: white;
+    }
+
+    #urscore,#botscore{
+      background-color: #aef2f4;
+    }
+    #urscore,#botscore{
+      border: none;
+      width:100px;
+    }
+    #bot,#you{
+      border: 1px solid black;
+    }
+
+    #gamebox,#reg{
+      display:none;
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="reg" align="center">
+  <div style="width: 300px; height: 470px; background-color: white; border-radius: 10px; position: relative; top: 50px; border: 4px solid grey;box-shadow: 2px 2px 10px 3px pink;">
+    <h3 align="center"> Choose your Avatar</h3>
+    <div id="avatar"><img style="width: 200px; height: 300px" src="{{ url_for('static',filename='chibi1.jpg') }}"></div>
+    <br>
+    <button id="prev"> Previous    </button> <button id="next"> Next </button> 
+    <br>
+    <button id="choose"> Choose</button>
+  </div>
+</div>
+
+<div id="ins" align="center">
+<div    style="width: 800px;background-color: white; border-radius: 10px; position: relative; top: 50px; border: 4px solid grey;box-shadow: 2px 2px 10px 3px pink; padding: 50px;">
+  <h1 align="center">INSTRUCTIONS</h1>
+  <p>
+    This is a standard Rock Paper Scissors Game. You play against a Bot which selects either Rock or Paper or Scissors at random.
+  </p>
+  <p >Standard Rules for Rock Paper Scissors:
+                                <ul align="left">
+                                    <li>Rock beats Scissors</li>
+                                    <li>Scissors beats Paper</li>
+                                    <li>Paper beats Rock</li>
+                                </ul>
+    <img align="center" style="height: 250px; width: 250px;" src=" {{ url_for('static',filename='rules.png') }} "/>                  
+  </p>
+  <br>
+  <p>
+    Make your hand gesture in front of Webcam and click on the play button. To start the next round click the Next Round button.
+    <br><br>
+ <img align="center" style="width: 500px; height: 270px;" src=" {{ url_for('static',filename='gestures.jpg') }} "/>
+
+  </p>  
+  <br> 
+ <p><h5 align="left">Please keep the following points in mind :</h5>
+                                <ul align="left">
+                                    <li>Try to have a plain background while make gestures in front of webcam. It is a little difficult for the system to recognize the gesture properly. </li>
+                                    <div align="center">
+  <img align="center" style="width: 300px; height: 240px;" src=" {{ url_for('static',filename='wback.png') }} "/>
+  <img align="center" style="width: 200px; height: 200px;"src=" {{ url_for('static',filename='wrong2.png') }} "/>
+  <br><br>
+  <img align="center" style="width: 300px; height: 240px;" src=" {{ url_for('static',filename='cback.png') }} "/>
+  <img align="center" style="width: 200px; height: 200px;" src=" {{ url_for('static',filename='tick3.png') }} "/>
+  <br>
+</div>
+                                    <li>Try not to keep your face or other objects in the picture. Only keep the intended hand gesture in front of webcam. </li>
+                    <div align="center">
+  <img align="center" style="width: 300px; height: 240px;" src=" {{ url_for('static',filename='wbody.png') }} "/>
+  <img align="center"style="width: 200px; height: 200px;" src=" {{ url_for('static',filename='wrong2.png') }} "/>
+</div>
+  <br>
+                                </ul>
+
+  </p>
+  <h6> P.S. I might still make mistakes in recognizing your hand gesture.</h6><br>
+  <button id="done">Start</button>
+</div>
+</div>
+
+<div id="gamebox">
+
+
+
+ <div class="container">
+   <div align="center">
+    
+        </div>
+   <br>
+   <div class="row">
+     <div class="box" style = " padding-top:15px; position:relative; left: 120px; border: 3px solid #199bb3; width: 400px; height:300px; border-radius: 5px ">
+       <div id="my_camera" style = " width: 380px; height:280px;"></div><br/>
+          
+          <input type="hidden" name="image" class="image-tag">
+          <h2 id='result' style="position: relative; left: 175px"></h2>
+       </div>
+       
+     <div class="box" style = " position:relative; left: 220px; border: 3px solid #199bb3; width: 400px; height:300px; border-radius: 5px;">
+       <div id="BOT" style="margin-top:2px;margin-left:45px;width: 380px; height:280px;">
+        
+       </div>
+     </div>
+
+   </div>
+  </div>
+ 
+
+  
+<br><br>
+          <div id="score" style=" ">
+
+            <div class="container" >
+              <div class="row" align="center">
+
+
+            <div id="you" class="row" style="border:4px solid ;padding : 10px ; position: absolute; left: 200px; top:400px;">
+            <div id="ui" style="width: 140px; height: 220px" ></div>
+            <div id="us"><h3>Your Score:</h3><br><h1 id="su"> 0 </h1></div>  </div>
+
+
+            <div class="msg" align="center" style="width:300px;position: absolute; left: 530px; top:400px;"><br><br><br><h2 id="txt"> Let the Game Begin! </h2> <br> 
+               <button id="play">PLAY</button>
+    <button style="display: none;"id="ready"> NEXT ROUND</button>
+                     </div>
+
+            
+              
+            <div id="bot"  class="row" style="position: absolute; left: 880px; top:400px;border: 4px solid ;padding : 10px ">
+            <div id="bi" style="width: 140px; height: 220px" ><img style="width: 130px; height: 210px" src=" {{ url_for('static',filename='bot2.jpg') }} "/></div>
+            <div id="bs"><h3>Bot Score:</h3><br><h1 id="bu"> 0 </h1> </div></div>
+         
+              </div>
+            </div>
+          
+        </div>
+
+
+
+    </div>
+
+
+
+<script language="JavaScript">
+var count=0;
+
+function getAva()
+{
+  if(count==0)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi1.jpg') }} "+ '/>';
+  }
+
+  else if(count==1)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi2.jpg') }} "+ '/>';
+  }
+
+  else if(count==2)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi3.jpg') }} "+ '/>';
+  }
+
+  else if(count==3)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi4.jpg') }} "+ '/>';
+  }
+
+  else if(count==4)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi5.jpg') }} "+ '/>';
+  }
+
+  else if(count==5)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi6.jpg') }} "+ '/>';
+  }
+
+  else if(count==6)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi7.jpg') }} "+ '/>';
+  }
+
+  else if(count==7)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi8.jpg') }} "+ '/>';
+  }
+
+  else if(count==8)
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi9.jpg') }} "+ '/>';
+  }
+
+  else
+  {
+    document.getElementById('avatar').innerHTML = '<img style="width: 200px; height: 300px" src='+" {{ url_for('static',filename='chibi10.jpg') }} "+ '/>';
+  }
+}
+
+
+function disp()
+{
+   if(count==0)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi1.jpg') }} "+ '/>';
+  }
+
+  else if(count==1)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px"" src='+" {{ url_for('static',filename='chibi2.jpg') }} "+ '/>';
+  }
+
+  else if(count==2)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi3.jpg') }} "+ '/>';
+  }
+
+  else if(count==3)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi4.jpg') }} "+ '/>';
+  }
+
+  else if(count==4)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi5.jpg') }} "+ '/>';
+  }
+
+  else if(count==5)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi6.jpg') }} "+ '/>';
+  }
+
+  else if(count==6)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi7.jpg') }} "+ '/>';
+  }
+
+  else if(count==7)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi8.jpg') }} "+ '/>';
+  }
+
+  else if(count==8)
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi9.jpg') }} "+ '/>';
+  }
+
+  else
+  {
+    document.getElementById('ui').innerHTML = '<img style="width: 130px; height: 210px" src='+" {{ url_for('static',filename='chibi10.jpg') }} "+ '/>';
+  }
+}
+
+
+
+$("#next").click(function(){
+  
+  if(count<9)
+    count=count+1;
+  else
+    count=0;
+  getAva();
+
+});
+
+
+
+$("#prev").click(function(){
+  
+  if(count>0)
+    count=count-1;
+  else
+    count=9;
+  getAva();
+
+});
+
+
+
+
+
+  var z;
+  var urscore=0;
+  var botscore=0;
+
+
+  function play(){
+  x=Math.floor((Math.random() * 3));
+  z=x;
+  if(x==0)
+    document.getElementById('BOT').innerHTML = '<img style="height:280px;" src='+" {{ url_for('static',filename='Paper.png') }} "+ '/> <br> <h2 style="position: relative; left: 85px;   top: 13px;"> PAPER </h2>';
+  else if (x==1)
+    document.getElementById('BOT').innerHTML = '<img style="height:280px;" src='+" {{ url_for('static',filename='Rock.png') }} "+ '/> <br> <h2 style="position: relative; left: 85px;  top: 13px;"> ROCK </h2>';
+  else
+    document.getElementById('BOT').innerHTML ='<img  style="height: 280px;" src='+" {{ url_for('static',filename='Scissors.png') }} "+ '/> <br>  <h2 style="position: relative; left: 85px; top: 13px;"> SCISSORS </h2>';
+}
+
+
+
+var u;
+
+
+
+function score(){ 
+var msg;
+if(u=='PAPER')
+{
+  if(z==0)
+  {
+    msg="draw";
+  }
+  else if(z==1)
+  {
+    msg="You win";
+    urscore=urscore+1;
+  }
+  else
+  {
+    msg="You lose";
+    botscore=botscore+1;
+  }
+}
+
+else if(u=='SCISSORS')
+{
+  if(z==0)
+  {
+    msg="You win";
+    urscore=urscore+1;
+  }
+  else if(z==1)
+  {
+   msg="You lose";
+    botscore=botscore+1;
+  }
+  else
+  {
+    msg="Draw"
+  }
+}
+
+else {
+  if(z==0)
+  {
+     msg="You lose";
+    botscore=botscore+1;
+    
+  }
+  else if(z==1)
+  {
+     msg="Draw"
+  }
+  else
+  {
+    msg="You win";
+    urscore=urscore+1;
+   
+  }
+}
+document.getElementById('su').innerHTML =  urscore ;
+document.getElementById('bu').innerHTML =  botscore ;
+document.getElementById('txt').innerHTML = msg;
+
+                
+}
+
+
+
+
+
+
+Webcam.set({
+width: 373,
+height: 259,
+image_format: 'jpeg',
+jpeg_quality: 120
+});
+
+
+
+var uri;
+var user;
+
+
+$("#choose").click(function(){
+          y=document.getElementById("reg");
+          y.style.display = "none";
+          x=document.getElementById("gamebox");
+          x.style.display = "block";
+          Webcam.attach( '#my_camera' );
+          disp();
+
+
+})
+
+
+
+
+$('#play').click(function() {
+Webcam.snap( function(data_uri) {
+$(".image-tag").val(data_uri);
+uri = data_uri;
+document.getElementById('my_camera').innerHTML = '<img style="margin-left:20px; width:350px; height:260px;" src="'+data_uri+'"/>';
+});
+});
+
+
+
+
+$('#play').click(function() { 
+var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+          var img = uri;
+          $.ajax({
+            type: "POST",
+
+            url: $SCRIPT_ROOT + "/predict/",
+            data: img,
+            success: function(data1){
+              u = data1;
+              $('#result').text(data1);
+              score();
+            }
+});
+
+           play();
+           document.getElementById('play').style.display = "none";
+  document.getElementById('ready').style.display = "block";
+        });
+
+
+
+$('#ready').click(function(){
+  Webcam.attach( '#my_camera' );
+  document.getElementById('BOT').innerHTML = '';
+  $('#result').text('');
+  document.getElementById('play').style.display = "block";
+  document.getElementById('ready').style.display = "none";
+  
+})
+
+$("#done").click(function(){
+          x=document.getElementById("ins");
+          x.style.display = "none";
+          y=document.getElementById("reg");
+          y.style.display = "block";
+})
+
+
+</script>
+</body>
+</html>
